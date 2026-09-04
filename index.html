@@ -120,17 +120,24 @@ async function saveImage(){
   if(mobile){
     const w=window.open('about:blank','_blank');
     const u=URL.createObjectURL(blob);
-    if(w){
-      w.document.title='精霊チェックリスト';
-      w.document.body.style.margin='0';
-      w.document.body.style.background='#222';
-      const img=w.document.createElement('img');
-      img.src=u;img.style.cssText='display:block;max-width:100%;height:auto;margin:auto';
-      w.document.body.appendChild(img);
-      w.document.body.insertAdjacentHTML('beforeend','<p style=\"color:white;text-align:center;font-family:sans-serif;padding:12px\">画像を長押しして「写真に保存」してください</p>');
-      setTimeout(()=>URL.revokeObjectURL(u),60000);
-      return;
-    }
+   if(w){
+  w.document.title='保存する画像';
+  w.document.body.style.margin='0';
+  w.document.body.style.padding='16px';
+  w.document.body.style.background='#f6f7f9';
+  w.document.body.style.textAlign='center';
+  w.document.body.style.fontFamily='sans-serif';
+
+  w.document.body.insertAdjacentHTML(
+    'beforeend',
+    '<p style="font-weight:bold;color:#20242a;font-size:18px;margin:0 0 14px">画像を長押しして保存してください</p>'
+  ); 
+  const img=w.document.createElement('img');
+  img.src=u;
+  img.style.cssText='display:block;width:100%;height:auto;margin:auto;border-radius:12px';
+  w.document.body.appendChild(img);
+  setTimeout(()=>URL.revokeObjectURL(u),60000);
+  return;
   }
   const u=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=u;a.download='精霊チェックリスト.png';
