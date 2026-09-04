@@ -139,7 +139,7 @@ async function saveImage(){
   setTimeout(()=>URL.revokeObjectURL(u),60000);
   return;
   }
-  const u=URL.createObjectURL(blob);
+  }
   const a=document.createElement('a');a.href=u;a.download='精霊チェックリスト.png';
   document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(u),10000);
