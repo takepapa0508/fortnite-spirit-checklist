@@ -115,35 +115,36 @@ async function saveImage(){
   }
   const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));
   if(!blob){alert('画像の作成に失敗しました');return}
-  const file=new File([blob],'精霊チェックリスト.png',{type:'image/png'});
-  const mobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if(mobile){
-    const w=window.open('about:blank','_blank');
-    const u=URL.createObjectURL(blob);
-   if(w){
-  w.document.title='保存する画像';
-  w.document.body.style.margin='0';
-  w.document.body.style.padding='16px';
-  w.document.body.style.background='#f6f7f9';
-  w.document.body.style.textAlign='center';
-  w.document.body.style.fontFamily='sans-serif';
+ const mobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  w.document.body.insertAdjacentHTML(
-    'beforeend',
-    '<p style="font-weight:bold;color:#20242a;font-size:18px;margin:0 0 14px">画像を長押しして保存してください</p>'
-  ); 
-  const img=w.document.createElement('img');
-  img.src=u;
-  img.style.cssText='display:block;width:100%;height:auto;margin:auto;border-radius:12px';
-  w.document.body.appendChild(img);
-  setTimeout(()=>URL.revokeObjectURL(u),60000);
-  return;
+  if(mobile){
+    const u=URL.createObjectURL(blob);
+
+    const overlay=document.createElement('div');
+    overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:#f6f7f9;padding:16px;overflow:auto;text-align:center;font-family:sans-serif;';
+
+    overlay.innerHTML='<p style="font-weight:bold;color:#20242a;font-size:18px;margin:0 0 14px">画像を長押しして保存してください</p>';
+
+    const img=document.createElement('img');
+    img.src=u;
+    img.style.cssText='display:block;width:100%;height:auto;margin:auto;border-radius:12px;';
+
+    overlay.appendChild(img);
+    document.body.appendChild(overlay);
+
+    setTimeout(()=>URL.revokeObjectURL(u),60000);
+    return;
   }
-  }
-  const a=document.createElement('a');a.href=u;a.download='精霊チェックリスト.png';
-  document.body.appendChild(a);a.click();a.remove();
+
+  const u=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=u;
+  a.download='精霊チェックリスト.png';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
   setTimeout(()=>URL.revokeObjectURL(u),10000);
-}
+} 
 load();
 </script>
 </body></html>
