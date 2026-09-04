@@ -31,7 +31,9 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,B
 .sprite img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain}
 .mark{position:absolute;right:7px;top:7px;width:31px;height:31px;border-radius:9px;background:#fff;border:2px solid #d7d9de;box-shadow:0 2px 5px #0002;color:transparent;font-size:23px;line-height:26px;font-weight:900}
 .spirit.on .mark{background:var(--ok);border-color:var(--ok);color:#fff}
-.spirit.on img{opacity:.62}
+.spirit img{opacity:.55;transition:opacity .2s}
+.spirit.on img{opacity:1}
+.spirit.on{border-color:var(--ok);box-shadow:0 0 0 2px #35b66a33}
 .spirit.on::after{content:"取得済み";display:block;margin:5px 2px 0;color:var(--ok);font-size:12px;font-weight:800}
 .hidden{display:none!important}
 @media(max-width:800px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
@@ -107,8 +109,16 @@ async function saveImage(){
     const s=visible[i],im=s.querySelector('img');
     const xx=pad+(i%cols)*(cw+gap),yy=pad+150+Math.floor(i/cols)*(ch+gap);
     x.fillStyle='#fff';x.beginPath();x.roundRect(xx,yy,cw,ch,18);x.fill();
-    x.drawImage(im,xx+12,yy+12,cw-24,cw-24);
-    if(s.classList.contains('on')){
+   const owned=s.classList.contains('on');
+x.globalAlpha=owned?1:0.55;
+x.drawImage(im,xx+12,yy+12,cw-24,cw-24);
+x.globalAlpha=1;
+    if(owned){
+      x.strokeStyle='#35b66a';
+x.lineWidth=6;
+x.beginPath();
+x.roundRect(xx,yy,cw,ch,18);
+x.stroke();
       x.fillStyle='#35b66a';x.beginPath();x.roundRect(xx+cw-60,yy+15,38,38,9);x.fill();
       x.fillStyle='#fff';x.font='bold 28px sans-serif';x.fillText('✓',xx+cw-54,yy+44);
     }
