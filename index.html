@@ -116,10 +116,6 @@ async function saveImage(){
   const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));
   if(!blob){alert('画像の作成に失敗しました');return}
   const file=new File([blob],'精霊チェックリスト.png',{type:'image/png'});
-  const canShare=!!(navigator.share && (!navigator.canShare || navigator.canShare({files:[file]})));
-  if(canShare){
-    try{await navigator.share({files:[file],title:'精霊チェックリスト'});return}catch(e){if(e.name==='AbortError')return}
-  }
   const mobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   if(mobile){
     const w=window.open('about:blank','_blank');
