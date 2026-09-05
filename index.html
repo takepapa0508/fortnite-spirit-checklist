@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#ffffff">
 <meta name="description" content="FORTNITE 精霊チェックリスト 15体版">
 <meta name="robots" content="index,follow">
-<title>FORTNITE 精霊チェックリスト</title>
+<title>FORTNITE 戦利品ハッカー精霊チェックリスト</title>
 <style>
 :root{--bg:#f6f7f9;--panel:#fff;--line:#e4e6ea;--text:#20242a;--muted:#707780;--accent:#5b67f1;--ok:#35b66a}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -22,6 +22,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,B
 .progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
 .tools{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
 .tools button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 11px;font-weight:700;color:var(--text);cursor:pointer}
+.tools button.active{background:#e53935;border-color:#e53935;color:#fff}
 .tools .primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .filters input,.filters select{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit}
@@ -29,12 +30,19 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,B
 .spirit{background:#fff;border:1px solid var(--line);border-radius:15px;padding:7px;box-shadow:0 2px 7px #0000000a}
 .sprite{position:relative;width:100%;padding:0;border:0;background:#fff;border-radius:11px;overflow:hidden;cursor:pointer}
 .sprite img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain}
-.mark{position:absolute;right:7px;top:7px;width:31px;height:31px;border-radius:9px;background:#fff;border:2px solid #d7d9de;box-shadow:0 2px 5px #0002;color:transparent;font-size:23px;line-height:26px;font-weight:900}
+.mark{display:none}
 .spirit.on .mark{background:var(--ok);border-color:var(--ok);color:#fff}
 .spirit img{opacity:.55;transition:opacity .2s}
 .spirit.on img{opacity:1}
-.spirit.on{border-color:var(--ok);box-shadow:0 0 0 2px #35b66a33}
-.spirit.on::after{content:"取得済み";display:block;margin:5px 2px 0;color:var(--ok);font-size:12px;font-weight:800}
+.spirit.on{border-color:#e53935;box-shadow:0 0 0 2px #e5393533}
+.spirit.on::after{display:none}
+.spirit-name{
+  text-align:center;
+  font-weight:800;
+  font-size:14px;
+  color:var(--text);
+  padding:8px 4px 3px;
+}
 .hidden{display:none!important}
 @media(max-width:800px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:560px){.container{padding:9px}.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.header{border-radius:14px;padding:13px}.counter{font-size:19px}}
@@ -44,7 +52,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,B
 <body>
 <div class="container">
 <section class="header">
-<div class="brand">FORTNITE 精霊チェックリスト</div>
+<div class="brand">FORTNITE 戦利品ハッカー精霊チェックリスト</div>
 <div class="version">あなたの15体版</div>
 <div class="stats"><span class="counter" id="counter">0 / 15</span><span class="badge" id="saved">保存済み</span></div>
 <div class="progress"><i id="bar"></i></div>
@@ -76,12 +84,43 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,B
 <script>
 const key='fortnite-spirit-checklist-user-v1';
 const spirits=[...document.querySelectorAll('.spirit')];
+const spiritNames=[
+  'ジャックラビット',
+  '冒険',
+  'クラウン',
+  '８ビット',
+  'ブッシュ',
+  'キルスイッチ',
+  'ジョンジー',
+  'ストームスカウト',
+  'クロムボ',
+  'シャドウ',
+  'テイルス',
+  'ソニック',
+  'オーバーシールド',
+  'Ｘ線',
+  'おにぎり'
+];
+
+spirits.forEach((s,i)=>{
+  const name=document.createElement('div');
+  name.className='spirit-name';
+  name.textContent=spiritNames[i];
+  s.appendChild(name);
+});
 let view='all';
 function state(){return spirits.map(x=>x.classList.contains('on'))}
 function update(){let a=state(),n=a.filter(Boolean).length,p=Math.round(n/15*100);document.getElementById('counter').textContent=n+' / 15';document.getElementById('bar').style.width=p+'%';try{localStorage.setItem(key,JSON.stringify(a));document.getElementById('saved').textContent='保存済み'}catch(e){document.getElementById('saved').textContent='この端末に保存できません'}}
 function load(){try{let a=JSON.parse(localStorage.getItem(key)||'[]');spirits.forEach((s,i)=>s.classList.toggle('on',!!a[i]))}catch(e){}update()}
 spirits.forEach(s=>s.querySelector('.sprite').addEventListener('click',()=>{s.classList.toggle('on');update();filter()}));
-function setView(v){view=v;filter()}
+function setView(v){
+  view=v;
+  filter();
+  const buttons=document.querySelectorAll('.tools button');
+  buttons[0].classList.toggle('active',v==='all');
+  buttons[1].classList.toggle('active',v==='missing');
+  buttons[2].classList.toggle('active',v==='owned');
+}
 function filter(){
   spirits.forEach(s=>{
     const on=s.classList.contains('on');
@@ -102,7 +141,7 @@ async function saveImage(){
   x.fillStyle='#f6f7f9';x.fillRect(0,0,c.width,c.height);
   const n=state().filter(Boolean).length;
   x.fillStyle='#20242a';x.font='bold 38px sans-serif';
-  x.fillText('FORTNITE 精霊チェックリスト',pad,pad+40);
+  x.fillText('FORTNITE 戦利品ハッカー精霊チェックリスト',pad,pad+40);
   x.font='bold 25px sans-serif';
   x.fillText(n+' / 15 取得 ('+Math.round(n/15*100)+'%)',pad,pad+82);
   for(let i=0;i<visible.length;i++){
@@ -113,15 +152,18 @@ async function saveImage(){
 x.globalAlpha=owned?1:0.55;
 x.drawImage(im,xx+12,yy+12,cw-24,cw-24);
 x.globalAlpha=1;
-    if(owned){
-      x.strokeStyle='#35b66a';
-x.lineWidth=6;
-x.beginPath();
-x.roundRect(xx,yy,cw,ch,18);
-x.stroke();
-      x.fillStyle='#35b66a';x.beginPath();x.roundRect(xx+cw-60,yy+15,38,38,9);x.fill();
-      x.fillStyle='#fff';x.font='bold 28px sans-serif';x.fillText('✓',xx+cw-54,yy+44);
-    }
+x.fillStyle='#20242a';
+x.font='bold 22px sans-serif';
+x.textAlign='center';
+x.fillText(spiritNames[s.dataset.i-1],xx+cw/2,yy+ch-14);
+x.textAlign='start';
+if(owned){
+  x.strokeStyle='#e53935';
+  x.lineWidth=6;
+  x.beginPath();
+  x.roundRect(xx,yy,cw,ch,18);
+  x.stroke();
+}
   }
   const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));
   if(!blob){alert('画像の作成に失敗しました');return}
@@ -156,5 +198,6 @@ x.stroke();
   setTimeout(()=>URL.revokeObjectURL(u),10000);
 } 
 load();
+setView('all');
 </script>
 </body></html>
