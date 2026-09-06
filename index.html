@@ -309,6 +309,9 @@ function checkComplete(){
   const completeOverlay=document.getElementById('completeOverlay');
   if(state().filter(Boolean).length===15){
     completeOverlay.classList.add('show');
+    setTimeout(()=>{
+    completeOverlay.classList.remove('show');
+},5000);
   }else{
     completeOverlay.classList.remove('show');
   }
