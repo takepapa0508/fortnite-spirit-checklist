@@ -38,10 +38,20 @@ body{margin:0;background: url("background-v2.png") center center / cover fixed;c
 .sprite img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain}
 .mark{display:none}
 .spirit.on .mark{background:var(--ok);border-color:var(--ok);color:#fff}
-.spirit img{opacity:.55;transition:opacity .2s}
+.spirit img{opacity:.1;transition:opacity .2s}
 .spirit.on img{opacity:1}
-.spirit.on{border-color:#e53935;box-shadow:0 0 0 2px #e5393533}
-.spirit.on::after{display:none}
+.spirit.on::after{
+  content:'✓';
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) rotate(-15deg);
+  font-size:80px;
+  font-weight:900;
+  color:#e53935;
+  text-shadow:0 0 8px #000;
+  pointer-events:none;
+}
 .spirit-name{
   text-align:center;
   font-weight:900;
