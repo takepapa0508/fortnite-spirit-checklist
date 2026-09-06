@@ -234,7 +234,12 @@ async function saveImage(){
   c.width=pad*2+cols*cw+(cols-1)*gap;
   c.height=pad*2+150+rows*ch+(rows-1)*gap;
   const x=c.getContext('2d');
-  x.fillStyle='#f6f7f9';x.fillRect(0,0,c.width,c.height);
+ const bg=new Image();
+bg.src=window.innerWidth<=600?'background-mobile.png':'background-v2.png';
+await new Promise(resolve=>{bg.onload=resolve});
+const scale=Math.max(c.width/bg.width,c.height/bg.height);
+const bw=bg.width*scale,bh=bg.height*scale;
+x.drawImage(bg,(c.width-bw)/2,(c.height-bh)/2,bw,bh);
   const n=state().filter(Boolean).length;
   x.fillStyle='#20242a';x.font='bold 38px sans-serif';
   x.fillText('FORTNITE 戦利品ハッカー精霊チェックリスト',pad,pad+40);
