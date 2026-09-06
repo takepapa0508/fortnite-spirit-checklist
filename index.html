@@ -284,7 +284,7 @@ spirits.forEach((s,i)=>{
 });
 let view='all';
 function state(){return spirits.map(x=>x.classList.contains('on'))}
-function update(){let a=state(),n=a.filter(Boolean).length,p=Math.round(n/15*100);document.getElementById('counter').textContent=n+' / 15';document.getElementById('bar').style.width=p+'%';try{localStorage.setItem(key,JSON.stringify(a));document.getElementById('saved').textContent='保存済み'}catch(e){document.getElementById('saved').textContent='この端末に保存できません'}}
+function update(){let a=state(),n=a.filter(Boolean).length,p=Math.round(n/15*100);document.getElementById('counter').textContent=n+' / 15';document.getElementById('bar').style.width=p+'%';checkComplete();try{localStorage.setItem(key,JSON.stringify(a));document.getElementById('saved').textContent='保存済み'}catch(e){document.getElementById('saved').textContent='この端末に保存できません'}}
 function checkComplete(){
   const completeOverlay=document.getElementById('completeOverlay');
   if(state().filter(Boolean).length===15){
@@ -292,7 +292,7 @@ function checkComplete(){
   }else{
     completeOverlay.classList.remove('show');
   }
-  updateComplete();
+
 }
 function load(){try{let a=JSON.parse(localStorage.getItem(key)||'[]');spirits.forEach((s,i)=>s.classList.toggle('on',!!a[i]))}catch(e){}update()}
 spirits.forEach(s=>s.querySelector('.sprite').addEventListener('click',()=>{s.classList.toggle('on');update();filter()}));
