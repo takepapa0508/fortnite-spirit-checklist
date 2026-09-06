@@ -78,6 +78,54 @@ body{margin:0;background: url("background-v2.png") center center / cover fixed;c
     transform:translateX(30px);
   }
 }
+/* コンプリート演出 */
+#completeOverlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:rgba(0,0,0,.45);
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  pointer-events:none;
+}
+
+#completeOverlay.show{
+  display:flex;
+}
+
+#completeOverlay img{
+  width:min(360px,70vw);
+  height:auto;
+  filter:drop-shadow(0 0 20px #fff);
+}
+
+#completeTitle{
+  font-size:clamp(48px,10vw,100px);
+  font-weight:900;
+  color:#ffd700;
+  text-shadow:
+    4px 4px 0 #e53935,
+    0 0 15px #fff,
+    0 0 30px #ff9800;
+  margin-bottom:10px;
+  animation:completePop .6s ease-out;
+}
+
+@keyframes completePop{
+  0%{
+    transform:scale(.3);
+    opacity:0;
+  }
+  70%{
+    transform:scale(1.15);
+  }
+  100%{
+    transform:scale(1);
+    opacity:1;
+  }
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
@@ -233,6 +281,15 @@ spirits.forEach((s,i)=>{
 let view='all';
 function state(){return spirits.map(x=>x.classList.contains('on'))}
 function update(){let a=state(),n=a.filter(Boolean).length,p=Math.round(n/15*100);document.getElementById('counter').textContent=n+' / 15';document.getElementById('bar').style.width=p+'%';try{localStorage.setItem(key,JSON.stringify(a));document.getElementById('saved').textContent='保存済み'}catch(e){document.getElementById('saved').textContent='この端末に保存できません'}}
+function checkComplete(){
+  const completeOverlay=document.getElementById('completeOverlay');
+  if(state().filter(Boolean).length===15){
+    completeOverlay.classList.add('show');
+  }else{
+    completeOverlay.classList.remove('show');
+  }
+  updateComplete();
+}
 function load(){try{let a=JSON.parse(localStorage.getItem(key)||'[]');spirits.forEach((s,i)=>s.classList.toggle('on',!!a[i]))}catch(e){}update()}
 spirits.forEach(s=>s.querySelector('.sprite').addEventListener('click',()=>{s.classList.toggle('on');update();filter()}));
 function setView(v){
