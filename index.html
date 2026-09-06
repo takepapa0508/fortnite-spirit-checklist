@@ -299,12 +299,14 @@ async function saveImage(){
 
     // 取得済みの枠
     if(owned){
-      x.strokeStyle='#e53935';
-      x.lineWidth=6;
-      x.beginPath();
-      x.roundRect(xx,yy,cw,ch,18);
-      x.stroke();
-    }
+  x.fillStyle='#e53935';
+  x.font='bold 80px sans-serif';
+  x.textAlign='center';
+  x.textBaseline='middle';
+  x.fillText('✓',xx+cw/2,yy+ch/2);
+  x.textAlign='start';
+  x.textBaseline='alphabetic';
+}
   }
 
   const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));
