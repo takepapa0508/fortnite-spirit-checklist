@@ -420,7 +420,9 @@ async function saveImage(){
     setTimeout(()=>URL.revokeObjectURL(u),60000);
     return;
   }
-
+const completeOverlay=document.getElementById('completeOverlay');
+const wasCompleteShown=completeOverlay.classList.contains('show');
+completeOverlay.classList.remove('show');
   const target=document.body;
 
 const canvas=await html2canvas(target,{
@@ -428,7 +430,9 @@ const canvas=await html2canvas(target,{
   useCORS:true,
   scale:window.devicePixelRatio
 });
-
+if(wasCompleteShown){
+  completeOverlay.classList.add('show');
+}
 const u=canvas.toDataURL('image/png');
 const a=document.createElement('a');
 a.href=u;
