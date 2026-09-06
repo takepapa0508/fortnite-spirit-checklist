@@ -54,6 +54,7 @@ body{margin:0;background: url("background-v2.png") center center / cover fixed;c
 @media(max-width:560px){.container{padding:9px}.grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.header{border-radius:14px;padding:13px}.counter{font-size:19px}}
 @media(max-width:390px){.grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -228,59 +229,86 @@ function resetAll(){if(confirm('チェックをすべて解除しますか？'))
 async function saveImage(){
   const visible=spirits.filter(s=>!s.classList.contains('hidden'));
   if(!visible.length){alert('保存する精霊がありません');return}
+
   const cols=3,pad=45,gap=25,cw=420,ch=455;
   const rows=Math.ceil(visible.length/cols);
+
   const c=document.createElement('canvas');
   c.width=pad*2+cols*cw+(cols-1)*gap;
   c.height=pad*2+150+rows*ch+(rows-1)*gap;
+
   const x=c.getContext('2d');
- const bg=new Image();
-bg.src=window.innerWidth<=600?'background-mobile.png':'background-v2.png';
-await new Promise(resolve=>{bg.onload=resolve});
-const scale=Math.max(c.width/bg.width,c.height/bg.height);
-const bw=bg.width*scale,bh=bg.height*scale;
-x.drawImage(bg,(c.width-bw)/2,(c.height-bh)/2,bw,bh);
+
+  // 現在のチェックリストと同じ背景を使用
+  const bg=new Image();
+  bg.src=window.innerWidth<=600?'background-mobile.png':'background-v2.png';
+  await new Promise(resolve=>{bg.onload=resolve});
+
+  const scale=Math.max(c.width/bg.width,c.height/bg.height);
+  const bw=bg.width*scale,bh=bg.height*scale;
+  x.drawImage(bg,(c.width-bw)/2,(c.height-bh)/2,bw,bh);
+
+  // タイトル
   const n=state().filter(Boolean).length;
-  x.fillStyle='#20242a';x.font='bold 38px sans-serif';
+  x.fillStyle='#fff';
+  x.font='bold 38px sans-serif';
   x.fillText('FORTNITE 戦利品ハッカー精霊チェックリスト',pad,pad+40);
+
   x.font='bold 25px sans-serif';
   x.fillText(n+' / 15 取得 ('+Math.round(n/15*100)+'%)',pad,pad+82);
+
+  // 精霊
   for(let i=0;i<visible.length;i++){
     const s=visible[i],im=s.querySelector('img');
-    const xx=pad+(i%cols)*(cw+gap),yy=pad+150+Math.floor(i/cols)*(ch+gap);
-    x.fillStyle='#fff';x.beginPath();x.roundRect(xx,yy,cw,ch,18);x.fill();
-   const owned=s.classList.contains('on');
-x.globalAlpha=owned?1:0.55;
-x.drawImage(im,xx+12,yy+12,cw-24,cw-24);
-x.globalAlpha=1;
-x.fillStyle='#20242a';
-x.font='bold 22px sans-serif';
-x.textAlign='center';
-x.fillText(spiritNames[s.dataset.i-1],xx+cw/2,yy+ch-14);
-x.textAlign='start';
-if(owned){
-  x.strokeStyle='#e53935';
-  x.lineWidth=6;
-  x.beginPath();
-  x.roundRect(xx,yy,cw,ch,18);
-  x.stroke();
-}
+    const xx=pad+(i%cols)*(cw+gap);
+    const yy=pad+150+Math.floor(i/cols)*(ch+gap);
+
+    const owned=s.classList.contains('on');
+
+    x.globalAlpha=owned?1:0.55;
+    x.drawImage(im,xx+12,yy+12,cw-24,cw-24);
+    x.globalAlpha=1;
+
+    // 精霊名
+    x.fillStyle='#fff';
+    x.font='bold 22px sans-serif';
+    x.textAlign='center';
+    x.fillText(spiritNames[s.dataset.i-1],xx+cw/2,yy+ch-14);
+    x.textAlign='start';
+
+    // 取得済みの枠
+    if(owned){
+      x.strokeStyle='#e53935';
+      x.lineWidth=6;
+      x.beginPath();
+      x.roundRect(xx,yy,cw,ch,18);
+      x.stroke();
+    }
   }
+
   const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));
-  if(!blob){alert('画像の作成に失敗しました');return}
- const mobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  if(!blob){
+    alert('画像の作成に失敗しました');
+    return;
+  }
+
+  const mobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   if(mobile){
     const u=URL.createObjectURL(blob);
 
     const overlay=document.createElement('div');
-    overlay.style.cssText='position:fixed;inset:0;z-index:99999;background:#f6f7f9;padding:16px;overflow:auto;text-align:center;font-family:sans-serif;';
+    overlay.style.cssText=
+      'position:fixed;inset:0;z-index:99999;background:#f6f7f9;padding:16px;overflow:auto;text-align:center;font-family:sans-serif;';
 
-    overlay.innerHTML='<p style="font-weight:bold;color:#20242a;font-size:18px;margin:0 0 14px">画像を長押しして保存してください</p>';
+    overlay.innerHTML=
+      '<p style="font-weight:bold;color:#20242a;font-size:18px;margin:0 0 14px">画像を長押しして保存してください</p>';
 
     const img=document.createElement('img');
     img.src=u;
-    img.style.cssText='display:block;width:100%;height:auto;margin:auto;border-radius:12px;';
+    img.style.cssText=
+      'display:block;width:100%;height:auto;margin:auto;border-radius:12px;';
 
     overlay.appendChild(img);
     document.body.appendChild(overlay);
@@ -296,8 +324,9 @@ if(owned){
   document.body.appendChild(a);
   a.click();
   a.remove();
+
   setTimeout(()=>URL.revokeObjectURL(u),10000);
-} 
+}
 load();
 setView('all');
 </script>
