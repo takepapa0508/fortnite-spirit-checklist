@@ -38,8 +38,15 @@ body{margin:0;background: url("background-v2.png") center center / cover fixed;c
 .sprite img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain}
 .mark{display:none}
 .spirit.on .mark{background:var(--ok);border-color:var(--ok);color:#fff}
-.spirit img{opacity:.1;transition:opacity .2s}
-.spirit.on img{opacity:1}
+.spirit img{
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:1/1;
+  object-fit:contain;
+  opacity:1 !important;
+  transition:none;
+}
 .spirit.on .mark{
   content:'✓';
   display:block;
