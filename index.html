@@ -41,6 +41,15 @@ body{margin:0;background:#080d1c;color:var(--text);font-family:-apple-system,Bli
   background:url("background-s.png") center top / 100% 100% no-repeat;
 }
 .spirit{background:transparent;border:0;border-radius:0;padding:0;box-shadow:none}
+/* 1段目 */
+.spirit:nth-child(-n+5){
+  transform:translateY(-35px);
+}
+
+/* 3段目 */
+.spirit:nth-child(n+11){
+  transform:translateY(35px);
+}
 .sprite{position:relative;width:100%;padding:0;border:0;border-radius:0;background:transparent;overflow:visible;cursor:pointer}
 .sprite img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain}
 .mark{display:none}
