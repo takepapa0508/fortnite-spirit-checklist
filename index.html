@@ -54,20 +54,24 @@ body{margin:0;background:#080d1c;color:var(--text);font-family:-apple-system,Bli
   transform:translateY(80px);
 }
 /* 精霊の横位置を少し内側へ */
+.spirit{
+  position:relative;
+}
+
 .spirit:nth-child(5n+1){
-  margin-left:20px;
+  left:10px;
 }
 
 .spirit:nth-child(5n+2){
-  margin-left:10px;
+  left:5px;
 }
 
 .spirit:nth-child(5n+4){
-  margin-left:-10px;
+  left:-5px;
 }
 
 .spirit:nth-child(5n){
-  margin-left:-20px;
+  left:-10px;
 }
 .sprite{position:relative;width:100%;padding:0;border:0;border-radius:0;background:transparent;overflow:visible;cursor:pointer}
 .sprite img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain}
