@@ -121,6 +121,12 @@ body{margin:0;background:#080d1c;color:var(--text);font-family:-apple-system,Bli
   top:12%;
 }
 .hidden{display:none!important}
+/* 未取得・取得済みでは精霊の個別位置調整をリセット */
+.grid.filtered .spirit{
+  transform:none !important;
+  left:auto !important;
+  margin-left:0 !important;
+}
 @media(max-width:800px){.grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:560px){.container{padding:9px}.grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.header{border-radius:14px;padding:13px}.counter{font-size:19px}}
 @media(max-width:390px){.grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
@@ -379,6 +385,10 @@ function setView(v){
   buttons[2].classList.toggle('active',v==='owned');
 }
 function filter(){
+  const grid=document.getElementById('grid');
+
+  grid.classList.toggle('filtered',view!=='all');
+
   spirits.forEach(s=>{
     const on=s.classList.contains('on');
     const ok=view==='all'||(view==='missing'&&!on)||(view==='owned'&&on);
