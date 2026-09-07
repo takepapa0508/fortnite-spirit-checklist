@@ -453,73 +453,37 @@ function filter(){
 function resetAll(){if(confirm('チェックをすべて解除しますか？')){spirits.forEach(s=>s.classList.remove('on'));update();filter()}}
 async function saveImage(){
   const visible=spirits.filter(s=>!s.classList.contains('hidden'));
-  if(!visible.length){alert('保存する精霊がありません');return}
 
-  const cols=5,pad=45,gap=25,cw=240,ch=300;
-  const rows=Math.ceil(visible.length/cols);
-
-  const c=document.createElement('canvas');
-  c.width=pad*2+cols*cw+(cols-1)*gap;
-  c.height=pad*2+150+rows*ch+(rows-1)*gap;
-
-  const x=c.getContext('2d');
-
-  // 現在のチェックリストと同じ背景を使用
-  const bg=new Image();
-  bg.src='background-s.png';
-  await new Promise(resolve=>{bg.onload=resolve});
-
-  x.drawImage(bg,0,0,c.width,c.height);
-
-  // タイトル
-  const n=state().filter(Boolean).length;
-  x.fillStyle='#fff';
-  x.font='bold 38px sans-serif';
-  x.font='bold 25px sans-serif';
-  // 精霊
-  for(let i=0;i<visible.length;i++){
-    const s=visible[i],im=s.querySelector('img');
-    const xx=pad+(i%cols)*(cw+gap);
-    const yy=pad+150+Math.floor(i/cols)*(ch+gap);
-
-    const owned=s.classList.contains('on');
-
-    x.globalAlpha=1;
-    x.drawImage(im,xx+25,yy+25,cw-50,cw-50);
-    x.globalAlpha=1;
-
-    // 精霊名
-    x.fillStyle='#fff';
-    x.font='bold 28px sans-serif';
-    x.textAlign='center';
-    x.fillText(spiritNames[s.dataset.i-1],xx+cw/2,yy+ch-14);
-    x.textAlign='start';
-
-    // 取得済みの枠
-    if(owned){
-  x.fillStyle='#e53935';
-  x.font='bold 150px sans-serif';
-  x.textAlign='center';
-  x.textBaseline='middle';
-  x.fillText('✓',xx+cw/2,yy+ch/2);
-  x.textAlign='start';
-  x.textBaseline='alphabetic';
-}
-  }
-
-  const blob=await new Promise(resolve=>c.toBlob(resolve,'image/png'));
-
-  if(!blob){
-    alert('画像の作成に失敗しました');
+  if(!visible.length){
+    alert('保存する精霊がありません');
     return;
   }
 
   const mobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+  // スマホ版
   if(mobile){
+    const grid=document.getElementById('grid');
+
+    const canvas=await html2canvas(grid,{
+      backgroundColor:null,
+      useCORS:true,
+      scale:1
+    });
+
+    const blob=await new Promise(resolve=>{
+      canvas.toBlob(resolve,'image/png');
+    });
+
+    if(!blob){
+      alert('画像の作成に失敗しました');
+      return;
+    }
+
     const u=URL.createObjectURL(blob);
 
     const overlay=document.createElement('div');
+
     overlay.style.cssText=
       'position:fixed;inset:0;z-index:99999;background:#f6f7f9;padding:16px;overflow:auto;text-align:center;font-family:sans-serif;';
 
@@ -527,36 +491,49 @@ async function saveImage(){
       '<p style="font-weight:bold;color:#20242a;font-size:18px;margin:0 0 14px">画像を長押しして保存してください</p>';
 
     const img=document.createElement('img');
+
     img.src=u;
+
     img.style.cssText=
       'display:block;width:100%;height:auto;margin:auto;border-radius:12px;';
 
     overlay.appendChild(img);
     document.body.appendChild(overlay);
 
-    setTimeout(()=>URL.revokeObjectURL(u),60000);
+    setTimeout(()=>{
+      URL.revokeObjectURL(u);
+    },60000);
+
     return;
   }
-const completeOverlay=document.getElementById('completeOverlay');
-const wasCompleteShown=completeOverlay.classList.contains('show');
-completeOverlay.classList.remove('show');
+
+  // PC版
+  const completeOverlay=document.getElementById('completeOverlay');
+  const wasCompleteShown=completeOverlay.classList.contains('show');
+
+  completeOverlay.classList.remove('show');
+
   const target=document.body;
 
-const canvas=await html2canvas(target,{
-  backgroundColor:null,
-  useCORS:true,
-  scale:window.devicePixelRatio
-});
-if(wasCompleteShown){
-  completeOverlay.classList.add('show');
-}
-const u=canvas.toDataURL('image/png');
-const a=document.createElement('a');
-a.href=u;
-a.download='精霊チェックリスト.png';
-document.body.appendChild(a);
-a.click();
-a.remove();
+  const canvas=await html2canvas(target,{
+    backgroundColor:null,
+    useCORS:true,
+    scale:window.devicePixelRatio
+  });
+
+  if(wasCompleteShown){
+    completeOverlay.classList.add('show');
+  }
+
+  const u=canvas.toDataURL('image/png');
+
+  const a=document.createElement('a');
+  a.href=u;
+  a.download='精霊チェックリスト.png';
+
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 }
 load();
 setView('all');
