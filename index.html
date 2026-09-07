@@ -347,7 +347,7 @@ async function saveImage(){
 
   // 現在のチェックリストと同じ背景を使用
   const bg=new Image();
-  bg.src=window.innerWidth<=600?'background-mobile.png':'background-v2.png';
+  bg.src='background-s.png';
   await new Promise(resolve=>{bg.onload=resolve});
 
   const scale=Math.max(c.width/bg.width,c.height/bg.height);
