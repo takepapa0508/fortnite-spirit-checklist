@@ -32,8 +32,13 @@ body{margin:0;background:#080d1c;color:var(--text);font-family:-apple-system,Bli
 .grid{
   display:grid;
   grid-template-columns:repeat(5,minmax(0,1fr));
-  gap:10px;
-  background:url("background-s.png") center center / contain no-repeat;
+  grid-template-rows:repeat(3,18%);
+  column-gap:10px;
+  row-gap:0;
+  padding-top:36%;
+  position:relative;
+  isolation:isolate;
+  background:url("background-s.png") center top / 100% 100% no-repeat;
 }
 .spirit{background:transparent;border:0;border-radius:0;padding:0;box-shadow:none}
 .sprite{position:relative;width:100%;padding:0;border:0;border-radius:0;background:transparent;overflow:visible;cursor:pointer}
