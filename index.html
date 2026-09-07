@@ -468,7 +468,7 @@ async function saveImage(){
     const canvas=await html2canvas(grid,{
       backgroundColor:null,
       useCORS:true,
-      scale:1
+      scale:window.devicePixelRatio
     });
 
     const blob=await new Promise(resolve=>{
