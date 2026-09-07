@@ -73,6 +73,25 @@ body{margin:0;background:#080d1c;color:var(--text);font-family:-apple-system,Bli
 .spirit:nth-child(5n){
   left:-80px;
 }
+@media(max-width:600px){
+
+  .spirit:nth-child(5n+1){
+    left:0;
+  }
+
+  .spirit:nth-child(5n+2){
+    left:0;
+  }
+
+  .spirit:nth-child(5n+4){
+    left:0;
+  }
+
+  .spirit:nth-child(5n){
+    left:0;
+  }
+
+}
 .sprite{position:relative;width:100%;padding:0;border:0;border-radius:0;background:transparent;overflow:visible;cursor:pointer}
 .sprite img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain}
 .mark{display:none}
@@ -111,6 +130,13 @@ body{margin:0;background:#080d1c;color:var(--text);font-family:-apple-system,Bli
   padding:3px 4px 3px;
   position:relative;
   left:-25px;
+}
+@media(max-width:600px){
+
+  .spirit-name{
+    left:0;
+  }
+
 }
 /* 精霊の位置調整 */
 .spirit:nth-child(-n+5){
