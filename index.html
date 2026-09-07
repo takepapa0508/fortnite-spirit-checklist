@@ -455,7 +455,7 @@ async function saveImage(){
   const visible=spirits.filter(s=>!s.classList.contains('hidden'));
   if(!visible.length){alert('保存する精霊がありません');return}
 
-  const cols=3,pad=45,gap=25,cw=420,ch=455;
+  const cols=5,pad=45,gap=25,cw=240,ch=300;
   const rows=Math.ceil(visible.length/cols);
 
   const c=document.createElement('canvas');
