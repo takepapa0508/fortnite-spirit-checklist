@@ -350,10 +350,8 @@ async function saveImage(){
   bg.src='background-s.png';
   await new Promise(resolve=>{bg.onload=resolve});
 
-  const scale=Math.min(c.width/bg.width,c.height/bg.height);
-  const bw=bg.width*scale,bh=bg.height*scale;
-  x.drawImage(bg,(c.width-bw)/2,(c.height-bh)/2,bw,bh);
-
+  x.drawImage(bg,0,0,c.width,c.height);
+  
   // タイトル
   const n=state().filter(Boolean).length;
   x.fillStyle='#fff';
