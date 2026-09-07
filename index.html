@@ -508,23 +508,13 @@ async function saveImage(){
   }
 
   // PC版
-  const completeOverlay=document.getElementById('completeOverlay');
-  const wasCompleteShown=completeOverlay.classList.contains('show');
+  const grid=document.getElementById('grid');
 
-  completeOverlay.classList.remove('show');
-
-  const target=document.body;
-
-  const canvas=await html2canvas(target,{
-    backgroundColor:null,
-    useCORS:true,
-    scale:window.devicePixelRatio
-  });
-
-  if(wasCompleteShown){
-    completeOverlay.classList.add('show');
-  }
-
+const canvas=await html2canvas(grid,{
+  backgroundColor:null,
+  useCORS:true,
+  scale:window.devicePixelRatio
+});
   const u=canvas.toDataURL('image/png');
 
   const a=document.createElement('a');
