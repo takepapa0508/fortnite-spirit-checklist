@@ -74,9 +74,7 @@ body{margin:0;background:#080d1c;color:var(--text);font-family:-apple-system,Bli
   left:-80px;
 }
 @media(max-width:600px){
-  .spirit.on .mark{
-    font-size:50px;
-}
+
 
   .spirit:nth-child(5n+1){
     left:0;
@@ -122,6 +120,12 @@ body{margin:0;background:#080d1c;color:var(--text);font-family:-apple-system,Bli
   pointer-events:none;
   z-index:10;
   background: transparent;
+}
+/* スマホだけチェックを小さくする */
+@media(max-width:600px){
+    .spirit.on .mark{
+        font-size:50px;
+    }
 }
 .spirit-name{
   text-align:center;
