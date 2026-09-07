@@ -46,7 +46,18 @@ body{margin:0;background:#080d1c;color:var(--text);font-family:-apple-system,Bli
 .spirit{
   position:relative;
 }
+/* PC：段ごとの上下位置 */
+.spirit:nth-child(-n+5){
+    transform:translateY(-90px);
+}
 
+.spirit:nth-child(n+6):nth-child(-n+10){
+    transform:translateY(-20px);
+}
+
+.spirit:nth-child(n+11){
+    transform:translateY(50px);
+}
 .spirit:nth-child(5n+1){
   left:80px;
 }
