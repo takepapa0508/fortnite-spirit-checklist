@@ -473,7 +473,7 @@ if(view === 'all'){
 }else if(view === 'missing'){
   saveFilterText = '未取得';
 }else if(view === 'owned'){
-  saveFilterText = '取得';
+  saveFilterText = '取得済み';
 }
   const mobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -563,8 +563,8 @@ saveLabel.style.cssText=`
   color:#000;
   background:#fff;
   border:3px solid #fff;
-  padding:4px 18px;
-  font-size:28px;
+  padding:10px 35px;
+  font-size:56px;
   font-weight:900;
   font-family:sans-serif;
   white-space:nowrap;
