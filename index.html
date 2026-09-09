@@ -457,7 +457,11 @@ function filter(){
     s.classList.toggle('hidden',!ok);
   });
 }
-function resetAll(){if(confirm('チェックをすべて解除しますか？')){spirits.forEach(s=>s.classList.remove('on'));update();filter()}}
+function resetAll(){
+  spirits.forEach(s=>s.classList.remove('on'));
+  update();
+  filter();
+}
 async function saveImage(){
   const visible=spirits.filter(s=>!s.classList.contains('hidden'));
 
