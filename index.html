@@ -465,51 +465,59 @@ async function saveImage(){
     alert('保存する精霊がありません');
     return;
   }
-// 画像保存時に表示するフィルター名
-let saveFilterText;
 
-if(view === 'all'){
-  saveFilterText = 'すべて';
-}else if(view === 'missing'){
-  saveFilterText = '未取得';
-}else if(view === 'owned'){
-  saveFilterText = '取得済み';
-}
+  // 画像保存時に表示するフィルター名
+  // 「すべて」の場合は表示しない
+  let saveFilterText='';
+
+  if(view === 'missing'){
+    saveFilterText='未取得';
+  }else if(view === 'owned'){
+    saveFilterText='取得済み';
+  }
+
   const mobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   // スマホ版
   if(mobile){
     const grid=document.getElementById('grid');
 
-   // 保存画像だけにフィルター名を表示
-const saveLabel=document.createElement('div');
-saveLabel.textContent=saveFilterText;
-saveLabel.style.cssText=`
-  position:absolute;
-  top:50px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:9999;
-  color:#000;
-  background:#fff;
-  border:3px solid #fff;
-  padding:4px 18px;
-  font-size:28px;
-  font-weight:900;
-  font-family:sans-serif;
-  white-space:nowrap;
-  pointer-events:none;
-`;
+    // フィルター名がある場合だけ表示
+    let saveLabel=null;
 
-grid.appendChild(saveLabel);
+    if(saveFilterText){
+      saveLabel=document.createElement('div');
+      saveLabel.textContent=saveFilterText;
 
-const canvas=await html2canvas(grid,{
-  backgroundColor:null,
-  useCORS:true,
-  scale:2
-});
+      saveLabel.style.cssText=`
+        position:absolute;
+        top:50px;
+        left:50%;
+        transform:translateX(-50%);
+        z-index:9999;
+        color:#000;
+        background:#fff;
+        border:3px solid #fff;
+        padding:4px 18px;
+        font-size:28px;
+        font-weight:900;
+        font-family:sans-serif;
+        white-space:nowrap;
+        pointer-events:none;
+      `;
 
-saveLabel.remove();
+      grid.appendChild(saveLabel);
+    }
+
+    const canvas=await html2canvas(grid,{
+      backgroundColor:null,
+      useCORS:true,
+      scale:2.5
+    });
+
+    if(saveLabel){
+      saveLabel.remove();
+    }
 
     const blob=await new Promise(resolve=>{
       canvas.toBlob(resolve,'image/png');
@@ -548,38 +556,45 @@ saveLabel.remove();
   }
 
   // PC版
+  const grid=document.getElementById('grid');
 
-const grid=document.getElementById('grid');
+  // フィルター名がある場合だけ表示
+  let saveLabel=null;
 
-// 保存画像だけにフィルター名を表示
-const saveLabel=document.createElement('div');
-saveLabel.textContent=saveFilterText;
-saveLabel.style.cssText=`
-  position:absolute;
-  top:50px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:9999;
-  color:#000;
-  background:#fff;
-  border:3px solid #fff;
-  padding:10px 35px;
-  font-size:56px;
-  font-weight:900;
-  font-family:sans-serif;
-  white-space:nowrap;
-  pointer-events:none;
-`;
+  if(saveFilterText){
+    saveLabel=document.createElement('div');
+    saveLabel.textContent=saveFilterText;
 
-grid.appendChild(saveLabel);
+    saveLabel.style.cssText=`
+      position:absolute;
+      top:50px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:9999;
+      color:#000;
+      background:#fff;
+      border:3px solid #fff;
+      padding:10px 35px;
+      font-size:56px;
+      font-weight:900;
+      font-family:sans-serif;
+      white-space:nowrap;
+      pointer-events:none;
+    `;
 
-const canvas=await html2canvas(grid,{
-  backgroundColor:null,
-  useCORS:true,
-  scale:window.devicePixelRatio
-});
+    grid.appendChild(saveLabel);
+  }
 
-saveLabel.remove();
+  const canvas=await html2canvas(grid,{
+    backgroundColor:null,
+    useCORS:true,
+    scale:window.devicePixelRatio
+  });
+
+  if(saveLabel){
+    saveLabel.remove();
+  }
+
   const u=canvas.toDataURL('image/png');
 
   const a=document.createElement('a');
