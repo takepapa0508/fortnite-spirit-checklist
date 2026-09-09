@@ -506,7 +506,8 @@ grid.appendChild(saveLabel);
 const canvas=await html2canvas(grid,{
   backgroundColor:null,
   useCORS:true,
-  scale:window.devicePixelRatio
+  scale:3
+  imageTimeout:0
 });
 
 saveLabel.remove();
