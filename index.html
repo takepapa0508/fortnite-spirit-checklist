@@ -482,82 +482,117 @@ async function saveImage(){
 
   const mobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  // スマホ版
-  if(mobile){
-    const grid=document.getElementById('grid');
+// スマホ版
+if(mobile){
+  const grid=document.getElementById('grid');
 
-    // フィルター名がある場合だけ表示
-    let saveLabel=null;
+  // フィルター名がある場合だけ表示
+  let saveLabel=null;
 
-    if(saveFilterText){
-      saveLabel=document.createElement('div');
-      saveLabel.textContent=saveFilterText;
+  if(saveFilterText){
+    saveLabel=document.createElement('div');
+    saveLabel.textContent=saveFilterText;
 
-      saveLabel.style.cssText=`
-        position:absolute;
-        top:50px;
-        left:50%;
-        transform:translateX(-50%);
-        z-index:9999;
-        color:#000;
-        background:#fff;
-        border:3px solid #fff;
-        padding:4px 18px;
-        font-size:28px;
-        font-weight:900;
-        font-family:sans-serif;
-        white-space:nowrap;
-        pointer-events:none;
-      `;
+    saveLabel.style.cssText=`
+      position:absolute;
+      top:50px;
+      left:50%;
+      transform:translateX(-50%);
+      z-index:9999;
+      color:#000;
+      background:#fff;
+      border:3px solid #fff;
+      padding:4px 18px;
+      font-size:28px;
+      font-weight:900;
+      font-family:sans-serif;
+      white-space:nowrap;
+      pointer-events:none;
+    `;
 
-      grid.appendChild(saveLabel);
-    }
+    grid.appendChild(saveLabel);
+  }
 
-    const canvas=await html2canvas(grid,{
-      backgroundColor:null,
-      useCORS:true,
-      scale:2.5
-    });
+  // 元の背景を一時的に外す
+  const originalBackground=grid.style.background;
+  grid.style.background='none';
 
-    if(saveLabel){
-      saveLabel.remove();
-    }
+  // 精霊・名前・チェックマークだけを高解像度で取得
+  const foreground=await html2canvas(grid,{
+    backgroundColor:null,
+    useCORS:true,
+    scale:2.5
+  });
 
-    const blob=await new Promise(resolve=>{
-      canvas.toBlob(resolve,'image/png');
-    });
+  // 背景を元に戻す
+  grid.style.background=originalBackground;
 
-    if(!blob){
-      alert('画像の作成に失敗しました');
-      return;
-    }
+  // 保存用キャンバスを1254×1254で作成
+  const canvas=document.createElement('canvas');
+  canvas.width=1254;
+  canvas.height=1254;
 
-    const u=URL.createObjectURL(blob);
+  const ctx=canvas.getContext('2d');
 
-    const overlay=document.createElement('div');
+  // 1254×1254の元背景を直接描画
+  const bg=new Image();
 
-    overlay.style.cssText=
-      'position:fixed;inset:0;z-index:99999;background:#f6f7f9;padding:16px;overflow:auto;text-align:center;font-family:sans-serif;';
+  await new Promise((resolve,reject)=>{
+    bg.onload=resolve;
+    bg.onerror=reject;
+    bg.src='background-s.png';
+  });
 
-    overlay.innerHTML=
-      '<p style="font-weight:bold;color:#20242a;font-size:18px;margin:0 0 14px">画像を長押しして保存してください</p>';
+  ctx.drawImage(bg,0,0,1254,1254);
 
-    const img=document.createElement('img');
+  // 精霊・名前・チェックマークを重ねる
+  ctx.drawImage(
+    foreground,
+    0,
+    0,
+    1254,
+    1254
+  );
 
-    img.src=u;
+  if(saveLabel){
+    saveLabel.remove();
+  }
 
-    img.style.cssText=
-      'display:block;width:100%;height:auto;margin:auto;border-radius:12px;';
+  const blob=await new Promise(resolve=>{
+    canvas.toBlob(resolve,'image/png');
+  });
 
-    overlay.appendChild(img);
-    document.body.appendChild(overlay);
-
-    setTimeout(()=>{
-      URL.revokeObjectURL(u);
-    },60000);
-
+  if(!blob){
+    alert('画像の作成に失敗しました');
     return;
   }
+
+  const u=URL.createObjectURL(blob);
+
+  const overlay=document.createElement('div');
+
+  overlay.style.cssText=
+    'position:fixed;inset:0;z-index:99999;background:#f6f7f9;padding:16px;overflow:auto;text-align:center;font-family:sans-serif;';
+
+  overlay.innerHTML=
+    '<p style="font-weight:bold;color:#20242a;font-size:18px;margin:0 0 14px">画像を長押しして保存してください</p>';
+
+  const img=document.createElement('img');
+
+  img.src=u;
+
+  img.style.cssText=
+    'display:block;width:100%;height:auto;margin:auto;border-radius:12px;';
+
+  overlay.appendChild(img);
+  document.body.appendChild(overlay);
+
+  setTimeout(()=>{
+    URL.revokeObjectURL(u);
+  },60000);
+
+  return;
+}
 
   // PC版
   const grid=document.getElementById('grid');
