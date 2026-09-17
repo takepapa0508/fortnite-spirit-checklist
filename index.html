@@ -4,652 +4,725 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#ffffff">
-<meta name="description" content="FORTNITE 精霊チェックリスト 精霊リスト">
+<meta name="description" content="FORTNITE 精霊チェックリスト">
 <meta name="robots" content="index,follow">
-<title> 戦利品ハッカー精霊チェックリスト</title>
+<title>FORTNITE 精霊チェックリスト</title>
 <style>
 :root{--bg:#f6f7f9;--panel:#fff;--line:#e4e6ea;--text:#20242a;--muted:#707780;--accent:#5b67f1;--ok:#35b66a}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:#080d1c;color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif}
-
-  .brand{transform:translateY(45px)}
-
 .container{width:min(1100px,100%);margin:auto;padding:14px 14px 40px}
 .header{background:transparent;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 2px 10px #0000000a}
-.brand{font-weight:900;font-size:20px;letter-spacing:.2px;color:#fff;text-align:center;}
+.brand{font-weight:900;font-size:20px;letter-spacing:.2px;color:#fff;text-align:center}
 .version{color:#fff;font-size:12px;margin-top:2px}
-.stats{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.stats{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
 .counter{font-size:22px;font-weight:900;color:#fff}
 .badge{color:#fff;font-size:13px}
 .progress{height:10px;background:#e8eaee;border-radius:99px;overflow:hidden;margin-top:10px}
 .progress i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
-.tools{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
+.tools{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;margin-top:13px}
 .tools button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 11px;font-weight:700;color:var(--text);cursor:pointer}
 .tools button.active{background:#e53935;border-color:#e53935;color:#fff}
 .tools .primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.filters{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
-.filters input,.filters select{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:10px;background:#fff;font:inherit}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(5,minmax(0,1fr));
-  grid-template-rows:repeat(3,18%);
-  column-gap:4px;
-  row-gap:0;
-  padding-top:36%;
-  position:relative;
-  isolation:isolate;
-  background:url("background-s.png") center top / 100% 100% no-repeat;
-}
-.spirit{background:transparent;border:0;border-radius:0;padding:0;box-shadow:none}
-
-/* 精霊の横位置を少し内側へ */
-.spirit{
-  position:relative;
-}
-/* PC：段ごとの上下位置 */
-.spirit:nth-child(-n+5){
-    transform:translateY(-90px);
-}
-
-.spirit:nth-child(n+6):nth-child(-n+10){
-    transform:translateY(-20px);
-}
-
-.spirit:nth-child(n+11){
-    transform:translateY(50px);
-}
-.spirit:nth-child(5n+1){
-  left:80px;
-}
-
-.spirit:nth-child(5n+2){
-  left:40px;
-}
-
-.spirit:nth-child(5n+4){
-  left:-40px;
-}
-
-.spirit:nth-child(5n){
-  left:-80px;
-}
-@media(max-width:600px){
-
-
-  .spirit:nth-child(5n+1){
-    left:0;
-  }
-
-  .spirit:nth-child(5n+2){
-    left:0;
-  }
-
-  .spirit:nth-child(5n+4){
-    left:0;
-  }
-
-  .spirit:nth-child(5n){
-    left:0;
-  }
-
-}
+.category-buttons{margin-top:6px}
+.stage-wrap{width:min(100%,1254px);margin:auto}
+.stage{display:none;position:relative;width:100%;aspect-ratio:1/1;isolation:isolate;background:url("assets/background.jpg") center top/100% 100% no-repeat;overflow:hidden}
+.stage.active{display:block}
+.spirit{position:absolute;background:transparent;border:0;border-radius:0;padding:0;box-shadow:none;transform:translate(-50%,-50%);z-index:2}
+.spirit.hidden{visibility:hidden !important;pointer-events:none}
 .sprite{position:relative;width:100%;padding:0;border:0;border-radius:0;background:transparent;overflow:visible;cursor:pointer}
-.sprite img{display:block;width:100%;aspect-ratio:1/1;object-fit:contain}
+.sprite img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;opacity:1!important;transition:none}
 .mark{display:none}
-.spirit.on .mark{background:var(--ok);border-color:var(--ok);color:#fff}
-.spirit img{
-  display:block;
-  width:75%;
-  height:auto;
-  aspect-ratio:1/1;
-  object-fit:contain;
-  opacity:1 !important;
-  transition:none;
-}
-.spirit.on .mark{
-  content:'✓';
-  display:block;
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  font-size:80px;
-  font-weight:900;
-  color:#e53935;
-  text-shadow:0 0 8px #000;
-  pointer-events:none;
-  z-index:10;
-  background: transparent;
-}
-/* スマホだけチェックを小さくする */
-@media(max-width:600px){
-    .spirit.on .mark{
-        font-size:40px;
-    }
-}
-.spirit-name{
-  text-align:center;
-  font-weight:900;
-  font-size:14px;
-  color:#000;
-  -webkit-text-stroke:2px #fff;
-  paint-order:stroke fill;
-  padding:3px 4px 3px;
-  position:relative;
-  left:-25px;
-}
-@media(max-width:600px){
-
-  .spirit-name{
-    left:0;
-  }
-
-}
-/* 精霊の位置調整 */
-.spirit:nth-child(-n+5){
-  top:-6%;
-}
-
-.spirit:nth-child(n+11){
-  top:12%;
-}
-.hidden{
-  visibility:hidden !important;
-}
+.spirit.on .mark{display:flex;position:absolute;inset:0;align-items:center;justify-content:center;font-size:80px;font-weight:900;color:#e53935;text-shadow:0 0 8px #000;pointer-events:none;z-index:10;background:transparent}
+.spirit-name{text-align:center;font-weight:900;font-size:14px;color:#000;-webkit-text-stroke:2px #fff;paint-order:stroke fill;padding:3px 4px;position:relative;left:-25px}
+.hint{text-align:center;color:#fff;font-size:12px;margin-top:8px;opacity:.85}
+#completeOverlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);align-items:center;justify-content:center;flex-direction:column;pointer-events:none}
+#completeOverlay.show{display:flex}
+.completeText{font-size:clamp(60px,10vw,120px);font-weight:900;color:#fff;white-space:nowrap;text-shadow:4px 4px 0 #e53935,0 0 15px #fff,0 0 30px #ff9800;animation:completePop .6s ease-out}
+@keyframes completePop{0%{transform:scale(.3);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
 @media(max-width:800px){
-
-   .spirit-name{
-        font-size:8px;
-    }
-  .grid{
-    grid-template-columns:repeat(5,minmax(0,1fr));
-  }
-
-/* スマホ：段ごとの上下位置調整 */
-.spirit:nth-child(-n+5){
-    transform:translateY(-15px);
+ .container{padding:9px}
+ .brand{font-size:18px}
+ .counter{font-size:19px}
+ .tools button{padding:8px 10px;font-size:12px}
+ .spirit-name{font-size:8px;left:0}
+ .spirit.on .mark{font-size:40px}
 }
-
-.spirit:nth-child(n+6):nth-child(-n+10){
-    transform:translateY(5px);
-}
-
-.spirit:nth-child(n+11){
-    transform:translateY(30px);
-}
-.spirit:nth-child(5n+1){
-    left:35px;
-}
-
-.spirit:nth-child(5n+2){
-    left:18px;
-}
-
-.spirit:nth-child(5n+4){
-    left:-18px;
-}
-
-.spirit:nth-child(5n){
-    left:-35px;
-}
-
-}
-@media(max-width:560px){.container{padding:9px}.grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.header{border-radius:14px;padding:13px}.counter{font-size:19px}}
-@media(max-width:390px){.grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(max-width:600px){
-  #completeOverlay img{
-  width:75vw;
-  max-width:420px;
-}
-
-.completeText{
-  font-size:52px;
-  white-space:nowrap;
-}
-  .header .brand{
-    transform:translateX(30px);
-  }
-}
-/* コンプリート演出 */
-#completeOverlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  background:rgba(0,0,0,.45);
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  pointer-events:none;
-}
-
-#completeOverlay.show{
-  display:flex;
-}
-
-#completeOverlay img{
-  width:min(520px,75vw);
-  height:auto;
-  filter:drop-shadow(0 0 25px #fff);
-}
-.completeText{
-  font-size:clamp(60px,10vw,120px);
-  font-weight:900;
-  color:#ffffff;
-  white-space:nowrap;
-  text-shadow:
-    4px 4px 0 #e53935,
-    0 0 15px #fff,
-    0 0 30px #ff9800;
-  margin-bottom:10px;
-  animation:completePop .6s ease-out;
-}
-#completeTitle{
-  font-size:clamp(48px,10vw,100px);
-  font-weight:900;
-  color:#ffd700;
-  text-shadow:
-    4px 4px 0 #e53935,
-    0 0 15px #fff,
-    0 0 30px #ff9800;
-  margin-bottom:10px;
-  animation:completePop .6s ease-out;
-}
-
-@keyframes completePop{
-  0%{
-    transform:scale(.3);
-    opacity:0;
-  }
-  70%{
-    transform:scale(1.15);
-  }
-  100%{
-    transform:scale(1);
-    opacity:1;
-  }
+ .container{padding:7px}
+ .header{padding:13px}
+ .stage-wrap{width:100%}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </head>
 <body>
-  <div id="completeOverlay">
-  <img src="complete.gif" alt="コンプリート">
-  <div class="completeText">コンプリート！</div>
-</div>
 <div class="container">
 <section class="header">
-<div class="brand"> 戦利品ハッカー精霊チェックリスト</div>
-<div class="stats"><span class="counter" id="counter">0 / 15</span><span class="badge" id="saved">保存済み</span></div>
-<div class="progress"><i id="bar"></i></div>
-<div class="tools">
-<button onclick="setView('all')">すべて</button>
-<button onclick="setView('missing')">未取得</button>
-<button onclick="setView('owned')">取得済み</button>
-<button class="primary" onclick="saveImage()">画像保存</button>
-<button onclick="resetAll()">すべて解除</button>
-</div>
+  <div class="brand">戦利品ハッカー精霊チェックリスト</div>
+  <div class="stats"><span class="counter" id="counter">0 / 20</span><span class="badge" id="saved">保存済み</span></div>
+  <div class="progress"><i id="bar"></i></div>
 
+  <div class="tools category-buttons" id="categoryButtons">
+    <button data-category="new" class="active">新種</button>
+    <button data-category="bounty">バウンティハンター</button>
+    <button data-category="all">全種</button>
+  </div>
+
+  <div class="tools" id="viewButtons">
+    <button data-view="all" class="active">すべて</button>
+    <button data-view="missing">未取得</button>
+    <button data-view="owned">取得済み</button>
+    <button class="primary" id="saveBtn">画像保存</button>
+    <button id="resetBtn">すべて解除</button>
+  </div>
 </section>
-<main class="grid" id="grid">
-  <article class="spirit" data-i="1">
-    <button class="sprite" type="button" aria-label="精霊1をチェック">
-      <img src="spirit01.png" alt="精霊1">
-      <span class="mark">✓</span>
-    </button>
-  </article>
 
-  <article class="spirit" data-i="2">
-    <button class="sprite" type="button" aria-label="精霊2をチェック">
-      <img src="spirit02.png" alt="精霊2">
-      <span class="mark">✓</span>
-    </button>
-  </article>
+<main class="stage-wrap">
+  <section class="stage active" id="stage-new">
+    <article class="spirit" data-id="new01" style="left:26%;top:23%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種1をチェック">
+        <img src="assets/new01.jpg" alt="新種1">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new02" style="left:40.5%;top:23%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種2をチェック">
+        <img src="assets/new02.jpg" alt="新種2">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new03" style="left:55.5%;top:23%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種3をチェック">
+        <img src="assets/new03.jpg" alt="新種3">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new04" style="left:70.5%;top:23%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種4をチェック">
+        <img src="assets/new04.jpg" alt="新種4">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new05" style="left:26%;top:39%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種5をチェック">
+        <img src="assets/new05.jpg" alt="新種5">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new06" style="left:40.5%;top:39%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種6をチェック">
+        <img src="assets/new06.jpg" alt="新種6">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new07" style="left:55.5%;top:39%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種7をチェック">
+        <img src="assets/new07.jpg" alt="新種7">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new08" style="left:70.5%;top:39%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種8をチェック">
+        <img src="assets/new08.jpg" alt="新種8">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new09" style="left:26%;top:55%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種9をチェック">
+        <img src="assets/new09.jpg" alt="新種9">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new10" style="left:40.5%;top:55%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種10をチェック">
+        <img src="assets/new10.jpg" alt="新種10">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new11" style="left:55.5%;top:55%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種11をチェック">
+        <img src="assets/new11.jpg" alt="新種11">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new12" style="left:70.5%;top:55%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種12をチェック">
+        <img src="assets/new12.jpg" alt="新種12">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new13" style="left:26%;top:71%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種13をチェック">
+        <img src="assets/new13.jpg" alt="新種13">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new14" style="left:40.5%;top:71%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種14をチェック">
+        <img src="assets/new14.png" alt="新種14">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new15" style="left:55.5%;top:71%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種15をチェック">
+        <img src="assets/new15.png" alt="新種15">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new16" style="left:70.5%;top:71%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種16をチェック">
+        <img src="assets/new16.png" alt="新種16">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new17" style="left:26%;top:88%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種17をチェック">
+        <img src="assets/new17.jpg" alt="新種17">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new18" style="left:40.5%;top:88%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種18をチェック">
+        <img src="assets/new18.jpg" alt="新種18">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new19" style="left:55.5%;top:88%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種19をチェック">
+        <img src="assets/new19.jpg" alt="新種19">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new20" style="left:70.5%;top:88%;width:16.5%;">
+      <button class="sprite" type="button" aria-label="新種20をチェック">
+        <img src="assets/new20.jpg" alt="新種20">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+  </section>
 
-  <article class="spirit" data-i="3">
-    <button class="sprite" type="button" aria-label="精霊3をチェック">
-      <img src="spirit03.png" alt="精霊3">
-      <span class="mark">✓</span>
-    </button>
-  </article>
+  <section class="stage" id="stage-bounty">
+    <article class="spirit" data-id="bounty01" style="left:22%;top:24%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター1をチェック">
+        <img src="assets/bounty01.jpg" alt="バウンティハンター1">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty02" style="left:37%;top:24%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター2をチェック">
+        <img src="assets/bounty02.jpg" alt="バウンティハンター2">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty03" style="left:52%;top:24%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター3をチェック">
+        <img src="assets/bounty03.jpg" alt="バウンティハンター3">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty04" style="left:67%;top:24%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター4をチェック">
+        <img src="assets/bounty04.png" alt="バウンティハンター4">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty05" style="left:82%;top:24%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター5をチェック">
+        <img src="assets/bounty05.jpg" alt="バウンティハンター5">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty06" style="left:22%;top:43%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター6をチェック">
+        <img src="assets/bounty06.png" alt="バウンティハンター6">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty07" style="left:37%;top:43%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター7をチェック">
+        <img src="assets/bounty07.png" alt="バウンティハンター7">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty08" style="left:52%;top:43%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター8をチェック">
+        <img src="assets/bounty08.png" alt="バウンティハンター8">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty09" style="left:67%;top:43%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター9をチェック">
+        <img src="assets/bounty09.png" alt="バウンティハンター9">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty10" style="left:82%;top:43%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター10をチェック">
+        <img src="assets/bounty10.png" alt="バウンティハンター10">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty11" style="left:22%;top:61%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター11をチェック">
+        <img src="assets/bounty11.png" alt="バウンティハンター11">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty12" style="left:37%;top:61%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター12をチェック">
+        <img src="assets/bounty12.png" alt="バウンティハンター12">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty13" style="left:52%;top:61%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター13をチェック">
+        <img src="assets/bounty13.png" alt="バウンティハンター13">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty14" style="left:67%;top:61%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター14をチェック">
+        <img src="assets/bounty14.png" alt="バウンティハンター14">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty15" style="left:82%;top:61%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター15をチェック">
+        <img src="assets/bounty15.png" alt="バウンティハンター15">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty16" style="left:22%;top:79%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター16をチェック">
+        <img src="assets/bounty16.png" alt="バウンティハンター16">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty17" style="left:37%;top:79%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター17をチェック">
+        <img src="assets/bounty17.png" alt="バウンティハンター17">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty18" style="left:52%;top:79%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター18をチェック">
+        <img src="assets/bounty18.png" alt="バウンティハンター18">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty19" style="left:67%;top:79%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター19をチェック">
+        <img src="assets/bounty19.png" alt="バウンティハンター19">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty20" style="left:82%;top:79%;width:15.5%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター20をチェック">
+        <img src="assets/bounty20.png" alt="バウンティハンター20">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+  </section>
 
-  <article class="spirit" data-i="4">
-    <button class="sprite" type="button" aria-label="精霊4をチェック">
-      <img src="spirit04.png" alt="精霊4">
-      <span class="mark">✓</span>
-    </button>
-  </article>
-
-  <article class="spirit" data-i="5">
-    <button class="sprite" type="button" aria-label="精霊5をチェック">
-      <img src="spirit05.png" alt="精霊5">
-      <span class="mark">✓</span>
-    </button>
-  </article>
-
-  <article class="spirit" data-i="6">
-    <button class="sprite" type="button" aria-label="精霊6をチェック">
-      <img src="spirit06.png" alt="精霊6">
-      <span class="mark">✓</span>
-    </button>
-  </article>
-
-  <article class="spirit" data-i="7">
-    <button class="sprite" type="button" aria-label="精霊7をチェック">
-      <img src="spirit07.png" alt="精霊7">
-      <span class="mark">✓</span>
-    </button>
-  </article>
-
-  <article class="spirit" data-i="8">
-    <button class="sprite" type="button" aria-label="精霊8をチェック">
-      <img src="spirit08.png" alt="精霊8">
-      <span class="mark">✓</span>
-    </button>
-  </article>
-
-  <article class="spirit" data-i="9">
-    <button class="sprite" type="button" aria-label="精霊9をチェック">
-      <img src="spirit09.png" alt="精霊9">
-      <span class="mark">✓</span>
-    </button>
-  </article>
-
-  <article class="spirit" data-i="10">
-    <button class="sprite" type="button" aria-label="精霊10をチェック">
-      <img src="spirit10.png" alt="精霊10">
-      <span class="mark">✓</span>
-    </button>
-  </article>
-
-  <article class="spirit" data-i="11">
-    <button class="sprite" type="button" aria-label="精霊11をチェック">
-      <img src="spirit11.png" alt="精霊11">
-      <span class="mark">✓</span>
-    </button>
-  </article>
-
-  <article class="spirit" data-i="12">
-    <button class="sprite" type="button" aria-label="精霊12をチェック">
-      <img src="spirit12.png" alt="精霊12">
-      <span class="mark">✓</span>
-    </button>
-  </article>
-
-  <article class="spirit" data-i="13">
-    <button class="sprite" type="button" aria-label="精霊13をチェック">
-      <img src="spirit13.png" alt="精霊13">
-      <span class="mark">✓</span>
-    </button>
-  </article>
-
-  <article class="spirit" data-i="14">
-    <button class="sprite" type="button" aria-label="精霊14をチェック">
-      <img src="spirit14.png" alt="精霊14">
-      <span class="mark">✓</span>
-    </button>
-  </article>
-
-  <article class="spirit" data-i="15">
-    <button class="sprite" type="button" aria-label="精霊15をチェック">
-      <img src="spirit15.png" alt="精霊15">
-      <span class="mark">✓</span>
-    </button>
-  </article>
+  <section class="stage" id="stage-all">
+    <article class="spirit" data-id="bounty16" style="left:8%;top:9%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター16をチェック">
+        <img src="assets/bounty16.png" alt="バウンティハンター16">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty17" style="left:24.5%;top:9%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター17をチェック">
+        <img src="assets/bounty17.png" alt="バウンティハンター17">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty18" style="left:41%;top:9%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター18をチェック">
+        <img src="assets/bounty18.png" alt="バウンティハンター18">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty19" style="left:57.5%;top:9%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター19をチェック">
+        <img src="assets/bounty19.png" alt="バウンティハンター19">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty12" style="left:74%;top:9%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター12をチェック">
+        <img src="assets/bounty12.png" alt="バウンティハンター12">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty15" style="left:90%;top:9%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター15をチェック">
+        <img src="assets/bounty15.png" alt="バウンティハンター15">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new05" style="left:8%;top:27%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種5をチェック">
+        <img src="assets/new05.jpg" alt="新種5">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new06" style="left:22.5%;top:27%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種6をチェック">
+        <img src="assets/new06.jpg" alt="新種6">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new07" style="left:37%;top:27%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種7をチェック">
+        <img src="assets/new07.jpg" alt="新種7">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new08" style="left:52%;top:27%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種8をチェック">
+        <img src="assets/new08.jpg" alt="新種8">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty03" style="left:67%;top:27%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター3をチェック">
+        <img src="assets/bounty03.jpg" alt="バウンティハンター3">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty10" style="left:81.5%;top:27%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター10をチェック">
+        <img src="assets/bounty10.png" alt="バウンティハンター10">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty20" style="left:94%;top:27%;width:12%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター20をチェック">
+        <img src="assets/bounty20.png" alt="バウンティハンター20">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new09" style="left:8%;top:44%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種9をチェック">
+        <img src="assets/new09.jpg" alt="新種9">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new10" style="left:22.5%;top:44%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種10をチェック">
+        <img src="assets/new10.jpg" alt="新種10">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new11" style="left:37%;top:44%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種11をチェック">
+        <img src="assets/new11.jpg" alt="新種11">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new12" style="left:52%;top:44%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種12をチェック">
+        <img src="assets/new12.jpg" alt="新種12">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty06" style="left:67%;top:44%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター6をチェック">
+        <img src="assets/bounty06.png" alt="バウンティハンター6">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty05" style="left:81.5%;top:44%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター5をチェック">
+        <img src="assets/bounty05.jpg" alt="バウンティハンター5">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty14" style="left:94%;top:44%;width:12%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター14をチェック">
+        <img src="assets/bounty14.png" alt="バウンティハンター14">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new13" style="left:8%;top:61%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種13をチェック">
+        <img src="assets/new13.jpg" alt="新種13">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new14" style="left:22.5%;top:61%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種14をチェック">
+        <img src="assets/new14.png" alt="新種14">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new15" style="left:37%;top:61%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種15をチェック">
+        <img src="assets/new15.png" alt="新種15">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new16" style="left:52%;top:61%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種16をチェック">
+        <img src="assets/new16.png" alt="新種16">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty08" style="left:67%;top:61%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター8をチェック">
+        <img src="assets/bounty08.png" alt="バウンティハンター8">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty13" style="left:81.5%;top:61%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター13をチェック">
+        <img src="assets/bounty13.png" alt="バウンティハンター13">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty04" style="left:94%;top:61%;width:12%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター4をチェック">
+        <img src="assets/bounty04.png" alt="バウンティハンター4">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new01" style="left:8%;top:78%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種1をチェック">
+        <img src="assets/new01.jpg" alt="新種1">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new02" style="left:22.5%;top:78%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種2をチェック">
+        <img src="assets/new02.jpg" alt="新種2">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new03" style="left:37%;top:78%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種3をチェック">
+        <img src="assets/new03.jpg" alt="新種3">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new04" style="left:52%;top:78%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種4をチェック">
+        <img src="assets/new04.jpg" alt="新種4">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty02" style="left:67%;top:78%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター2をチェック">
+        <img src="assets/bounty02.jpg" alt="バウンティハンター2">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty07" style="left:81.5%;top:78%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター7をチェック">
+        <img src="assets/bounty07.png" alt="バウンティハンター7">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty11" style="left:94%;top:78%;width:12%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター11をチェック">
+        <img src="assets/bounty11.png" alt="バウンティハンター11">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new17" style="left:8%;top:92%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種17をチェック">
+        <img src="assets/new17.jpg" alt="新種17">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new18" style="left:24%;top:92%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種18をチェック">
+        <img src="assets/new18.jpg" alt="新種18">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new19" style="left:41%;top:92%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種19をチェック">
+        <img src="assets/new19.jpg" alt="新種19">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="new20" style="left:57.5%;top:92%;width:14%;">
+      <button class="sprite" type="button" aria-label="新種20をチェック">
+        <img src="assets/new20.jpg" alt="新種20">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty09" style="left:74%;top:92%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター9をチェック">
+        <img src="assets/bounty09.png" alt="バウンティハンター9">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+    <article class="spirit" data-id="bounty01" style="left:90%;top:92%;width:14%;">
+      <button class="sprite" type="button" aria-label="バウンティハンター1をチェック">
+        <img src="assets/bounty01.jpg" alt="バウンティハンター1">
+        <span class="mark">✓</span>
+      </button>
+    </article>
+  </section>
 </main>
+
+<div class="hint">精霊をクリックすると取得済みにできます。チェック状態はこの端末に保存されます。</div>
 </div>
-<script>
-const key='fortnite-spirit-checklist-user-v1';
-const spirits=[...document.querySelectorAll('.spirit')];
-const spiritNames=[
-  'ジャックラビット',
-  '冒険',
-  'クラウン',
-  '８ビット',
-  'ブッシュ',
-  'キルスイッチ',
-  'ジョンジー',
-  'ストームスカウト',
-  'クロムボ',
-  'シャドウ',
-  'テイルス',
-  'ソニック',
-  'オーバーシールド',
-  'Ｘ線',
-  'おにぎり'
-];
 
-spirits.forEach((s,i)=>{
-  const name=document.createElement('div');
-  name.className='spirit-name';
-  name.textContent=spiritNames[i];
-  s.appendChild(name);
-});
-let view='all';
-function state(){return spirits.map(x=>x.classList.contains('on'))}
-function update(){let a=state(),n=a.filter(Boolean).length,p=Math.round(n/15*100);document.getElementById('counter').textContent=n+' / 15';document.getElementById('bar').style.width=p+'%';checkComplete();try{localStorage.setItem(key,JSON.stringify(a));document.getElementById('saved').textContent='保存済み'}catch(e){document.getElementById('saved').textContent='この端末に保存できません'}}
-function checkComplete(){
-  const completeOverlay=document.getElementById('completeOverlay');
-  if(state().filter(Boolean).length===15){
-    completeOverlay.classList.add('show');
-    setTimeout(()=>{
-    completeOverlay.classList.remove('show');
-},5000);
-  }else{
-    completeOverlay.classList.remove('show');
-  }
-
-}
-function load(){try{let a=JSON.parse(localStorage.getItem(key)||'[]');spirits.forEach((s,i)=>s.classList.toggle('on',!!a[i]))}catch(e){}update()}
-spirits.forEach(s=>s.querySelector('.sprite').addEventListener('click',()=>{s.classList.toggle('on');update();filter()}));
-function setView(v){
-  view=v;
-  filter();
-  const buttons=document.querySelectorAll('.tools button');
-  buttons[0].classList.toggle('active',v==='all');
-  buttons[1].classList.toggle('active',v==='missing');
-  buttons[2].classList.toggle('active',v==='owned');
-}
-function filter(){
-  spirits.forEach(s=>{
-    const on=s.classList.contains('on');
-    const ok=view==='all'||(view==='missing'&&!on)||(view==='owned'&&on);
-    s.classList.toggle('hidden',!ok);
-  });
-}
-function resetAll(){
-  spirits.forEach(s=>s.classList.remove('on'));
-  update();
-  filter();
-}
-async function saveImage(){
-  const visible=spirits.filter(s=>!s.classList.contains('hidden'));
-
-  if(!visible.length){
-    alert('保存する精霊がありません');
-    return;
-  }
-
-  // 画像保存時に表示するフィルター名
-  // 「すべて」の場合は表示しない
-  let saveFilterText='';
-
-  if(view === 'missing'){
-    saveFilterText='未取得';
-  }else if(view === 'owned'){
-    saveFilterText='取得済み';
-  }
-
-  const mobile=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-// スマホ版
-if(mobile){
-  const grid=document.getElementById('grid');
-
-  // フィルター名がある場合だけ表示
-  let saveLabel=null;
-
-  if(saveFilterText){
-    saveLabel=document.createElement('div');
-    saveLabel.textContent=saveFilterText;
-
-    saveLabel.style.cssText=`
-      position:absolute;
-      top:50px;
-      left:50%;
-      transform:translateX(-50%);
-      z-index:9999;
-      color:#000;
-      background:#fff;
-      border:3px solid #fff;
-      padding:4px 18px;
-      font-size:28px;
-      font-weight:900;
-      font-family:sans-serif;
-      white-space:nowrap;
-      pointer-events:none;
-    `;
-
-    grid.appendChild(saveLabel);
-  }
-
-  // 元の背景を一時的に外す
-  const originalBackground=grid.style.background;
-  grid.style.background='none';
-
-  // 精霊・名前・チェックマークだけを高解像度で取得
-  const foreground=await html2canvas(grid,{
-    backgroundColor:null,
-    useCORS:true,
-    scale:2.5
-  });
-
-  // 背景を元に戻す
-  grid.style.background=originalBackground;
-
-  // 保存用キャンバスを1254×1254で作成
-  const canvas=document.createElement('canvas');
-  canvas.width=1254;
-  canvas.height=1254;
-
-  const ctx=canvas.getContext('2d');
-
-  // 1254×1254の元背景を直接描画
-  const bg=new Image();
-
-  await new Promise((resolve,reject)=>{
-    bg.onload=resolve;
-    bg.onerror=reject;
-    bg.src='background-s.png';
-  });
-
-  ctx.drawImage(bg,0,0,1254,1254);
-
-  // 精霊・名前・チェックマークを重ねる
-  ctx.drawImage(
-    foreground,
-    0,
-    0,
-    1254,
-    1254
-  );
-
-  if(saveLabel){
-    saveLabel.remove();
-  }
-
-  const blob=await new Promise(resolve=>{
-    canvas.toBlob(resolve,'image/png');
-  });
-
-  if(!blob){
-    alert('画像の作成に失敗しました');
-    return;
-  }
-
-  const u=URL.createObjectURL(blob);
-
-  const overlay=document.createElement('div');
-
-  overlay.style.cssText=
-    'position:fixed;inset:0;z-index:99999;background:#f6f7f9;padding:16px;overflow:auto;text-align:center;font-family:sans-serif;';
-
-  overlay.innerHTML=
-    '<p style="font-weight:bold;color:#20242a;font-size:18px;margin:0 0 14px">画像を長押しして保存してください</p>';
-
-  const img=document.createElement('img');
-
-  img.src=u;
-
-  img.style.cssText=
-    'display:block;width:100%;height:auto;margin:auto;border-radius:12px;';
-
-  overlay.appendChild(img);
-  document.body.appendChild(overlay);
-
-  setTimeout(()=>{
-    URL.revokeObjectURL(u);
-  },60000);
-
-  return;
-}
-
-  // PC版
-  const grid=document.getElementById('grid');
-
-  // フィルター名がある場合だけ表示
-  let saveLabel=null;
-
-  if(saveFilterText){
-    saveLabel=document.createElement('div');
-    saveLabel.textContent=saveFilterText;
-
-    saveLabel.style.cssText=`
-      position:absolute;
-      top:50px;
-      left:50%;
-      transform:translateX(-50%);
-      z-index:9999;
-      color:#000;
-      background:#fff;
-      border:3px solid #fff;
-      padding:10px 35px;
-      font-size:56px;
-      font-weight:900;
-      font-family:sans-serif;
-      white-space:nowrap;
-      pointer-events:none;
-    `;
-
-    grid.appendChild(saveLabel);
-  }
-
-  const canvas=await html2canvas(grid,{
-    backgroundColor:null,
-    useCORS:true,
-    scale:window.devicePixelRatio
-  });
-
-  if(saveLabel){
-    saveLabel.remove();
-  }
-
-  const u=canvas.toDataURL('image/png');
-
-  const a=document.createElement('a');
-  a.href=u;
-  a.download='精霊チェックリスト.png';
-
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-load();
-setView('all');
-
-</script>
 <div id="completeOverlay">
-  <img src="complete.gif" alt="コンプリート">
   <div class="completeText">コンプリート！</div>
 </div>
-</body></html>
+
+<script>
+const key='fortnite-spirit-checklist-user-v4';
+const state={};
+let category='new';
+let view='all';
+let completeTimer=null;
+
+function allSpiritElements(){
+  return [...document.querySelectorAll('.spirit')];
+}
+
+function load(){
+  try{
+    Object.assign(state,JSON.parse(localStorage.getItem(key)||'{}'));
+  }catch(e){}
+}
+
+function saveState(){
+  try{
+    localStorage.setItem(key,JSON.stringify(state));
+    document.getElementById('saved').textContent='保存済み';
+  }catch(e){
+    document.getElementById('saved').textContent='この端末に保存できません';
+  }
+}
+
+function categoryIds(v){
+  if(v==='new') return [...document.querySelectorAll('#stage-new .spirit')].map(x=>x.dataset.id);
+  if(v==='bounty') return [...document.querySelectorAll('#stage-bounty .spirit')].map(x=>x.dataset.id);
+  return [...document.querySelectorAll('#stage-all .spirit')].map(x=>x.dataset.id);
+}
+
+function currentIds(){
+  return categoryIds(category);
+}
+
+function isOwned(id){ return !!state[id]; }
+
+function addNames(){
+  document.querySelectorAll('.spirit').forEach(el=>{
+    if(el.querySelector('.spirit-name')) return;
+    const name=el.dataset.id;
+    const div=document.createElement('div');
+    div.className='spirit-name';
+    div.textContent=name;
+    el.appendChild(div);
+  });
+}
+
+function filter(){
+  const visibleStage=document.getElementById('stage-'+category);
+  allSpiritElements().forEach(el=>{
+    const inCurrent=el.closest('.stage')===visibleStage;
+    const owned=isOwned(el.dataset.id);
+    const ok=view==='all'||(view==='missing'&&!owned)||(view==='owned'&&owned);
+    el.classList.toggle('hidden',!(inCurrent&&ok));
+    el.classList.toggle('on',owned);
+  });
+}
+
+function update(){
+  const ids=currentIds();
+  const owned=ids.filter(isOwned).length;
+  const total=ids.length;
+  document.getElementById('counter').textContent=owned+' / '+total;
+  document.getElementById('bar').style.width=(total?owned/total*100:0)+'%';
+  filter();
+  if(owned===total) showComplete();
+  else hideComplete();
+}
+
+function showComplete(){
+  const ov=document.getElementById('completeOverlay');
+  if(completeTimer) clearTimeout(completeTimer);
+  ov.classList.add('show');
+  completeTimer=setTimeout(()=>ov.classList.remove('show'),5000);
+}
+
+function hideComplete(){
+  document.getElementById('completeOverlay').classList.remove('show');
+}
+
+function setCategory(v){
+  category=v;
+  document.querySelectorAll('#categoryButtons button').forEach(b=>b.classList.toggle('active',b.dataset.category===v));
+  document.querySelectorAll('.stage').forEach(s=>s.classList.toggle('active',s.id==='stage-'+v));
+  update();
+}
+
+function setView(v){
+  view=v;
+  document.querySelectorAll('#viewButtons button[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
+  filter();
+}
+
+allSpiritElements().forEach(el=>{
+  const btn=el.querySelector('.sprite');
+  btn.addEventListener('click',()=>{
+    const id=el.dataset.id;
+    state[id]=!state[id];
+    saveState();
+    update();
+  });
+});
+
+document.querySelectorAll('#categoryButtons button').forEach(b=>b.addEventListener('click',()=>setCategory(b.dataset.category)));
+document.querySelectorAll('#viewButtons button[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  if(!confirm('すべてのチェックを解除しますか？')) return;
+  Object.keys(state).forEach(k=>state[k]=false);
+  saveState();
+  update();
+});
+
+async function saveImage(){
+  const stage=document.getElementById('stage-'+category);
+  if(!stage) return;
+  const hidden=[...stage.querySelectorAll('.spirit.hidden')];
+  hidden.forEach(x=>x.classList.remove('hidden'));
+  try{
+    const canvas=await html2canvas(stage,{
+      backgroundColor:null,
+      useCORS:true,
+      scale:window.devicePixelRatio
+    });
+    const a=document.createElement('a');
+    a.href=canvas.toDataURL('image/png');
+    a.download='fortnite-'+category+'-'+view+'.png';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }catch(e){
+    alert('画像の保存に失敗しました');
+  }finally{
+    hidden.forEach(x=>x.classList.add('hidden'));
+    filter();
+  }
+}
+
+document.getElementById('saveBtn').addEventListener('click',saveImage);
+
+load();
+addNames();
+update();
+setCategory('new');
+setView('all');
+</script>
+</body>
+</html>
